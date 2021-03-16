@@ -1,0 +1,80 @@
+syntax = "proto2";
+import "google/protobuf/empty.proto";
+package pb.ainlp.typos;
+
+
+message Request {
+    optional bytes business_id = 1; // 业务ID，如快报：kuaibao
+    optional bytes doc_id = 2; // 文章ID
+    required bytes title = 3; // 标题(UTF8编码)  required
+    required bytes body_content = 4; // 正文(UTF8编码)  required
+    optional int32 channel_id   = 5;  //一级分类ID
+    optional bytes channel_name = 6;  //一级分类名
+    optional int32 data_type    = 7;  //数据类型 0-图文 1-短视频 2-小视频
+}
+
+message TypoInfo {
+    optional int32 sno = 1; //句子索引 
+    optional int32 idx = 2;//错别字在句子中的位置索引
+    optional bytes sent = 3; //句子
+    optional bytes wrong = 4;//错字
+    optional bytes correct = 5;//改正的字
+    optional int32 typo = 6; //错别字类型
+    optional float prob = 7;//概率
+    optional bytes ori_sent = 8; //长句
+    optional int32 term_imp = 9; //级别
+    optional int32 level    = 10; //置信度 1-轻度 2-重度
+    optional int32 pop_result = 11; //是否pop延迟分发 0-否 1-是
+}
+
+message TypoResult {
+    required int32 title_num = 1;//标题错别字个数
+    required int32 fst_num = 2; //第一段错别字个数
+    required int32 all_num = 3; //全文错别字个数
+    repeated TypoInfo details = 4;//具体错别字信息
+    optional int32 typo_level = 5; //文章级置信度 1-轻度 2-重度
+    optional int32 typo_pop_result = 6; //文章是否pop延迟分发 0-否 1-是
+}
+
+message Response {
+    optional bytes doc_id = 1; // 文章ID
+    optional TypoResult typo_result = 2; // 错别字识别结果
+    required int32 ret_code = 3; // 错误码：0-成功 非0-失败
+}
+
+
+message Drequest {
+    optional string business_id = 1; // 业务ID，如快报：kuaibao
+    optional string doc_id = 2; // 文章ID
+    required string title = 3; // 标题(UTF8编码)  required
+    required string body_content = 4; // 正文(UTF8编码)  required
+    optional int32 channel_id   = 5;  //一级分类ID
+    optional string channel_name = 6;  //一级分类名
+    optional int32 data_type    = 7;  //数据类型 0-图文 1-短视频 2-小视频
+}
+
+message Dresponse {
+    optional string doc_id = 1; // 文章ID
+    optional string typo_result = 2; // 错别字识别结果
+    required int32 ret_code = 3; // 错误码：0-成功 非0-失败
+}
+
+message SentenceRequest {
+    optional bytes body = 1; // pickled FlyWeight
+}
+
+message SentenceResponse {
+    optional bytes body = 1; // pickled FlyWeight
+}
+
+message DebugResponse {
+    optional string json = 1;
+}
+
+service Typodetect {
+    rpc getFeature(Request) returns (Response) {}
+    rpc typoserver(Request) returns (Response) {}
+    rpc typoserver_debug(Request) returns (Dresponse) {}
+    rpc proc_seq(SentenceRequest) returns (SentenceResponse) {}
+    rpc debug(google.protobuf.Empty) returns (DebugResponse) {}
+}
