@@ -1,0 +1,12 @@
+pytz>=2019.3
+grpcio>=1.23.0
+fire>=0.2.1
+protobuf>=3.9.1
+uwsgidecorators>=1.1.0
+flask>=1.1.1
+PyYAML>=5.1.2
+Cython>=0.29.17
+pathos>=0.2.6
+pypinyin>=0.38.1
+gensim>=3.8.3
+configparser>=5.0.0
