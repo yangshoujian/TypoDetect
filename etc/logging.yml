@@ -1,0 +1,35 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  simple:
+    format: "%(asctime)s [%(funcName)s: %(filename)s,%(lineno)d,%(levelname)s] %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: WARN
+    formatter: simple
+    stream: ext://sys.stdout
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    filename: log/debug/log
+    backupCount: 3
+    when: midnight
+    interval: 1
+  file2:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: WARN
+    formatter: simple
+    filename: log/warn/log
+    backupCount: 3
+    when: midnight
+    interval: 1
+loggers:
+  simpleExample:
+    level: DEBUG
+    handlers: [console]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console, file, file2]
